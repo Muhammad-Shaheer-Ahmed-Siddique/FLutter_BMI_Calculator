@@ -32,151 +32,59 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
-  var wtController = TextEditingController();
-  var ftController = TextEditingController();
-  var result = '';
-  var status = '';
-  String imagePath = '';
-
-  var bgColor = Colors.purple.shade800;
-
-  @override
-  void dispose() {
-    wtController.dispose();
-    ftController.dispose();
-    super.dispose();
-  }
-
-  void calculateBMI() {
-    var wt = wtController.text.trim();
-    var ft = ftController.text.trim();
-
-    if (wt.isEmpty || ft.isEmpty) {
-      setState(() {
-        result = 'Please fill all the required fields';
-      });
-      return;
-    }
-    double? iwt = double.tryParse(wt);
-    double? ift = double.tryParse(ft);
-
-    if (iwt == null || ift == null) {
-      setState(() {
-        result = 'Please enter valid numbers only';
-      });
-      return;
-    }
-
-    double totalInch = ift * 12;
-    double totalCm = totalInch * 2.54;
-    double totalM = totalCm / 100;
-
-    double bmi = iwt / (totalM * totalM);
-
-    if (bmi > 25) {
-      setState(() {
-        status = 'You are Overweight';
-      });
-    } else if (bmi < 18) {
-      setState(() {
-        status = 'You are Underweight';
-      });
-    } else {
-      setState(() {
-        status = 'You are Healthy';
-      });
-    }
-    if (bmi > 25) {
-      setState(() {
-        bgColor = Colors.red.shade900;
-        imagePath = 'assets/images/overweight.png';
-      });
-    } else if (bmi < 18) {
-      setState(() {
-        bgColor = Colors.orange.shade900;
-        imagePath = 'assets/images/underweight.png';
-      });
-    } else {
-      setState(() {
-        bgColor = Colors.green.shade900;
-        imagePath = 'assets/images/healthy.png';
-      });
-    }
-
-    setState(() {
-      result = 'Your BMI is ${bmi.toStringAsFixed(2)}\n$status';
-    });
-  }
+  var _width = 200.0;
+  var _height = 100.0;
+  var _duration = Duration(seconds: 1);
+  bool _isAnimate = true;
+  Decoration _myDecor = BoxDecoration(
+    color: Colors.purple,
+    borderRadius: BorderRadius.circular(10),
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Main Screen")),
 
-      body: Container(
-        color: bgColor,
-
-        child: Center(
-          child: SizedBox(
-            width: 300,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'BMI',
-                      style: TextStyle(
-                        fontSize: 34,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    TextField(
-                      controller: wtController,
-                      decoration: InputDecoration(
-                        label: Text('Enter Your Weight(in kg)'),
-                        prefixIcon: Icon(Icons.line_weight),
-                      ),
-                      keyboardType: TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                    ),
-
-                    SizedBox(height: 21),
-
-                    TextField(
-                      controller: ftController,
-                      decoration: InputDecoration(
-                        label: Text('Enter Your Height(in Feet)'),
-                        prefixIcon: Icon(Icons.height),
-                      ),
-                      keyboardType: TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                    ),
-
-                    SizedBox(height: 21),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        calculateBMI();
-                      },
-                      child: Text('Calculate'),
-                    ),
-                    SizedBox(height: 21),
-                    if (imagePath.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Image.asset(imagePath, height: 150),
-                      ),
-                    Text(result, style: TextStyle(fontSize: 19)),
-                  ],
-                ),
-              ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedContainer(
+              width: _width,
+              height: _height,
+              curve: Curves.easeInOut,
+              decoration: _myDecor,
+              duration: _duration,
             ),
-          ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  if (_isAnimate) {
+                    _width = 100.0;
+                    _height = 200;
+                    _duration = Duration(milliseconds: 800);
+                    _myDecor = BoxDecoration(
+                      color: Colors.purple,
+                      borderRadius: BorderRadius.circular(10),
+                    );
+                    _isAnimate = false;
+                  } else {
+                    _width = 200.0;
+                    _height = 100.0;
+                    _duration = Duration(milliseconds: 900);
+                    _myDecor = BoxDecoration(
+                      color: Colors.red.shade800,
+                      borderRadius: BorderRadius.circular(100),
+                    );
+                    _isAnimate = true;
+                  }
+                });
+              },
+              child: Text("Animate"),
+            ),
+          ],
         ),
       ),
     );

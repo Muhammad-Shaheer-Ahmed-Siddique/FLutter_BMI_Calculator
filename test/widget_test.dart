@@ -1,19 +1,21 @@
+import 'package:FLutter_BMI_Calculator/main.dart' show TodoApp;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:todo_app/main.dart';
 
 void main() {
   testWidgets('BMI calculator shows error when fields are empty', (
     WidgetTester tester,
   ) async {
-    // Build the app
+    // ✅ Wahi widget jo runApp() me hai
     await tester.pumpWidget(TodoApp());
 
-    // Tap the calculate button without entering anything
+    // ✅ Calculate button press (fields empty hain)
     await tester.tap(find.text('Calculate'));
+
+    // ✅ UI rebuild hone do
     await tester.pump();
 
-    // Expect error message
+    // ✅ Error text verify
     expect(find.text('Please fill all the required fields'), findsOneWidget);
   });
 }
